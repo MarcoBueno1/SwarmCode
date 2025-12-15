@@ -1,0 +1,42 @@
+# Qwen-Agentes Configuration
+
+# Provider selection: qwen, claude, gpt, gemini
+provider: qwen
+
+# Model name (optional, uses default if not specified)
+model: null
+
+# Timeout for AI requests (seconds)
+timeout: 120
+
+# Maximum iterations per task
+max_iterations: 5
+
+# Output directory for generated code
+output_dir: ./output
+
+# Enable/disable features
+features:
+  save_artifacts: true
+  run_tests: false
+  security_validation: true
+  structured_output: true
+
+# Agent-specific settings
+agents:
+  architect:
+    temperature: 0.3
+  developer:
+    temperature: 0.2
+  qa:
+    temperature: 0.1
+  security:
+    temperature: 0.1
+  reviewer:
+    temperature: 0.0
+
+# Logging configuration
+logging:
+  level: INFO
+  format: json  # json or text
+  output: ./logs/app.log
