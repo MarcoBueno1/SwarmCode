@@ -116,15 +116,16 @@ class QwenProvider(AIProvider):
 
     def chat(self, system: str, user: str) -> str:
         """
-        Send message to Qwen via CLI with smart timeout that resets on output.
+        Send message to Qwen via CLI using positional prompt (non-interactive).
 
-        The timeout only triggers when Qwen is silent for more than `timeout`
-        seconds. Every time new output arrives, the countdown resets. This
-        prevents timeouts on long-running tasks where Qwen is actively
-        producing output (e.g. streaming tokens, writing many files).
+        Uses `qwen --yolo "prompt"` instead of stdin piping. This is the
+        correct way to invoke Qwen non-interactively — it runs as a one-shot
+        command that produces output and exits, never asking for user input.
+
+        Smart timeout: only triggers when Qwen is silent for > timeout seconds.
+        Every time new output arrives, the countdown resets.
 
         All output from Qwen is shown to the terminal in real-time.
-        Questions from Qwen are auto-answered with full access (YOLO mode).
 
         Args:
             system: System prompt (agent role)
@@ -140,29 +141,23 @@ class QwenProvider(AIProvider):
         # Format prompt exactly like the original implementation
         prompt = f"{system}\n\nTAREFA:\n{user}"
 
-        # Build command with yolo mode and auth type for non-interactive usage
-        # --auth-type qwen-oauth is required because when Qwen is called via stdin pipe
-        # (non-interactive), it can't access the browser-based OAuth session from the
-        # interactive terminal. This flag tells it to use the cached OAuth token.
-        cmd = [self._command, "--yolo", "--auth-type", "qwen-oauth"]
+        # Use positional prompt for non-interactive mode (never asks questions)
+        # --yolo: auto-approve all tool calls
+        # --auth-type qwen-oauth: use cached OAuth token (browser cookies don't work in subprocess)
+        cmd = [self._command, "--yolo", "--auth-type", "qwen-oauth", "--", prompt]
 
         start_time = time.time()
-        output_buffer: list[str] = []
+        output_buffer: list[bytes] = []
 
         try:
             process = subprocess.Popen(
                 cmd,
-                stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,  # Merge stderr into stdout
                 text=False,  # Binary mode for unbuffered reads
                 bufsize=0,  # Unbuffered for real-time reads
                 cwd=self._project_dir  # Run from project directory
             )
-
-            # Send prompt and close stdin to signal EOF
-            process.stdin.write(prompt.encode("utf-8"))
-            process.stdin.close()
 
             # Make stdout non-blocking so we can poll with select
             fd = process.stdout.fileno()
@@ -171,7 +166,6 @@ class QwenProvider(AIProvider):
 
             last_output_time = time.time()
             chunk_size = 4096
-            output_buffer: list[bytes] = []
 
             while True:
                 # Check if process has exited
