@@ -78,6 +78,7 @@ class QwenProvider(AIProvider):
             target_dir = Path(__file__).parent.parent.parent
 
         # Create/update .qwen/settings.json with yolo mode
+        # New format: tools.approvalMode (top-level approvalMode is deprecated)
         settings_dir = target_dir / ".qwen"
         settings_dir.mkdir(parents=True, exist_ok=True)
         settings_file = settings_dir / "settings.json"
@@ -90,8 +91,13 @@ class QwenProvider(AIProvider):
             except (json.JSONDecodeError, IOError):
                 settings = {}
 
-        # Always force yolo mode
-        settings["approvalMode"] = "yolo"
+        # Set the new format
+        if "tools" not in settings:
+            settings["tools"] = {}
+        settings["tools"]["approvalMode"] = "yolo"
+
+        # Remove deprecated top-level approvalMode if present
+        settings.pop("approvalMode", None)
 
         with open(settings_file, "w") as f:
             json.dump(settings, f, indent=2)
@@ -141,10 +147,10 @@ class QwenProvider(AIProvider):
         # Format prompt exactly like the original implementation
         prompt = f"{system}\n\nTAREFA:\n{user}"
 
-        # Use positional prompt for non-interactive mode (never asks questions)
+        # Use -p/--prompt for true non-interactive mode (no TUI, no user input)
         # --yolo: auto-approve all tool calls
         # --auth-type qwen-oauth: use cached OAuth token (browser cookies don't work in subprocess)
-        cmd = [self._command, "--yolo", "--auth-type", "qwen-oauth", "--", prompt]
+        cmd = [self._command, "-p", prompt, "--yolo", "--auth-type", "qwen-oauth"]
 
         start_time = time.time()
         output_buffer: list[bytes] = []
