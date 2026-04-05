@@ -58,7 +58,11 @@ class ProviderFactory:
         provider_type = config.provider
 
         if provider_type == ProviderType.QWEN:
-            return QwenProvider(timeout=config.timeout)
+            return QwenProvider(
+                timeout=config.timeout,
+                project_dir=config.project_dir if hasattr(config, 'project_dir') else None,
+                show_output=True
+            )
 
         elif provider_type == ProviderType.CLAUDE:
             if not config.anthropic_api_key:

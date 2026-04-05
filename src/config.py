@@ -118,6 +118,7 @@ class Config(BaseSettings):
     gemini_api_key: Optional[str] = None
 
     # Paths
+    project_dir: Optional[Path] = None  # Target project for YOLO mode
     output_dir: Path = Path("./output")
     config_file: Path = Path("./config.yaml")
 

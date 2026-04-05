@@ -57,6 +57,7 @@ def run(
     iterations: int = typer.Option(5, "--max-iter", "-i", help="Maximum iterations"),
     timeout: int = typer.Option(300, "--timeout", "-t", help="Timeout in seconds"),
     output: Path = typer.Option("./output", "--output", "-o", help="Output directory"),
+    project_dir: Optional[Path] = typer.Option(None, "--project-dir", "-d", help="Target project directory for YOLO mode"),
     config_file: Optional[Path] = typer.Option(None, "--config", "-c", help="Config file"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output"),
 ):
@@ -94,6 +95,7 @@ def run(
         config.max_iterations = mode.max_iterations  # Override based on mode
         config.timeout = timeout  # Override timeout from CLI
         config.output_dir = output
+        config.project_dir = project_dir or config.project_dir
 
         # Create provider
         console.print(f"[green]✓[/green] Initializing {config.provider.value} provider...")
