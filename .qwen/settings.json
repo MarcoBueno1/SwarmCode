@@ -2,5 +2,6 @@
   "tools": {
     "approvalMode": "yolo"
   },
-  "$version": 3
+  "$version": 3,
+  "approvalMode": "yolo"
 }
