@@ -164,10 +164,6 @@ class Orchestrator:
         return ctx
 
 
-class MaxRetriesExceeded(Exception):
-    """Raised when all retry attempts fail."""
-    pass
-
     def _run_iteration(
         self,
         ctx: ExecutionContext,
@@ -326,3 +322,8 @@ class MaxRetriesExceeded(Exception):
             )
             for i in issues_data
         ]
+
+
+class MaxRetriesExceeded(Exception):
+    """Raised when all retry attempts fail."""
+    pass

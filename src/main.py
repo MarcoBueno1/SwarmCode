@@ -53,7 +53,7 @@ def run(
     task: str = typer.Argument(..., help="O que deseja construir"),
     provider: str = typer.Option("qwen", "--provider", "-p", help="AI provider to use"),
     model: Optional[str] = typer.Option(None, "--model", "-m", help="Model name"),
-    mode: ExecutionMode = typer.Option(ExecutionMode.STANDARD, "--mode", "-m", help="Execution mode"),
+    mode: ExecutionMode = typer.Option(ExecutionMode.STANDARD, "--mode", help="Execution mode"),
     iterations: int = typer.Option(5, "--max-iter", "-i", help="Maximum iterations"),
     timeout: int = typer.Option(300, "--timeout", "-t", help="Timeout in seconds"),
     output: Path = typer.Option("./output", "--output", "-o", help="Output directory"),
