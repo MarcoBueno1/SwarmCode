@@ -251,10 +251,10 @@ features:
         console.print(f"[yellow]![/yellow] {config_file} already exists")
 
     console.print("\n[green]Initialization complete![/green]")
-    console.print("\n[dim]Next steps:")
-    console.print("1. Edit .env and add your API keys")
-    console.print("2. Edit config.yaml to customize settings")
-    console.print("3. Run: SwarmCode run \"your task\"[/dim]")
+    console.print("\n[dim]Next steps:[/dim]")
+    console.print("[dim]1. Edit .env and add your API keys[/dim]")
+    console.print("[dim]2. Edit config.yaml to customize settings[/dim]")
+    console.print("[dim]3. Run: swarmcode run \"your task\"[/dim]")
 
 
 @app.command()
