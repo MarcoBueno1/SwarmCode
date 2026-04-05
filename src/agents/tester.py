@@ -102,22 +102,22 @@ REQUIREMENTS:
 
 EXAMPLE (Python/pytest):
 ```python filepath=tests/test_auth.py
-"""Tests for authentication module."""
+# Tests for authentication module.
 
 import pytest
 from src.auth import authenticate, AuthenticationError
 
 class TestAuthenticate:
-    """Tests for authenticate function."""
-    
+    # Tests for authenticate function.
+
     def test_authenticate_valid_credentials_returns_token(self):
-        """Test successful authentication with valid credentials."""
+        # Test successful authentication with valid credentials.
         result = authenticate("valid_user", "valid_pass")
         assert result is not None
         assert "token" in result
-    
+
     def test_authenticate_invalid_credentials_raises_error(self):
-        """Test authentication fails with invalid credentials."""
+        # Test authentication fails with invalid credentials.
         with pytest.raises(AuthenticationError):
             authenticate("invalid_user", "wrong_pass")
 ```
