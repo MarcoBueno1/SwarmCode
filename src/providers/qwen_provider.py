@@ -140,8 +140,11 @@ class QwenProvider(AIProvider):
         # Format prompt exactly like the original implementation
         prompt = f"{system}\n\nTAREFA:\n{user}"
 
-        # Build command with yolo mode
-        cmd = [self._command, "--yolo"]
+        # Build command with yolo mode and auth type for non-interactive usage
+        # --auth-type qwen-oauth is required because when Qwen is called via stdin pipe
+        # (non-interactive), it can't access the browser-based OAuth session from the
+        # interactive terminal. This flag tells it to use the cached OAuth token.
+        cmd = [self._command, "--yolo", "--auth-type", "qwen-oauth"]
 
         start_time = time.time()
         output_buffer: list[str] = []
